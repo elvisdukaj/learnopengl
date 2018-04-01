@@ -1,10 +1,12 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 #include <array>
+#include <vector>
 #include <string>
+#include <string_view>
 #include <iostream>
+#include <stdexcept>
 using namespace std;
-using namespace string_literals;
 
 void keyCallback(GLFWwindow* window, int key, int, int action, int)
 {
@@ -16,6 +18,146 @@ void frameBufferSizeCallback(GLFWwindow* window, int width, int height)
 {
 	glViewport(0, 0, width, height);
 }
+
+namespace glsl{
+
+enum ShaderType : GLenum {
+	vertex = GL_VERTEX_SHADER,
+	fragment = GL_FRAGMENT_SHADER
+};
+
+
+class Shader {
+public:
+	Shader(ShaderType type, const string_view& src)
+		: mShader{ glCreateShader(type) }
+	{
+		auto srcData = src.data();
+		glShaderSource(mShader, 1, &srcData, nullptr);
+
+		glCompileShader(mShader);
+
+		GLint success;
+		glGetShaderiv(mShader, GL_COMPILE_STATUS, &success);
+
+		if (!success)
+		{
+			GLsizei infoLogLen;
+			glGetShaderiv(mShader, GL_INFO_LOG_LENGTH, &infoLogLen);
+
+			string errorMessage(infoLogLen, '\0');
+			glGetShaderInfoLog(mShader, infoLogLen, nullptr, &errorMessage[0]);
+
+			throw invalid_argument{ errorMessage };
+		}
+	}
+
+	Shader(Shader&) = delete;
+	Shader& operator = (const Shader&) = delete;
+
+	Shader(Shader&& rhs)
+		: mShader{ rhs.mShader }
+	{
+		rhs.mShader = 0;
+	}
+
+	Shader& operator = (Shader&& rhs)
+	{
+		mShader = rhs.mShader;
+		rhs.mShader = 0;
+		return *this;
+	}
+
+	~Shader()
+	{
+		if (mShader)
+			glDeleteShader(mShader);
+	}
+
+	operator GLuint() const noexcept
+	{
+		return mShader;
+	}
+
+private:
+	GLuint mShader;
+};
+
+class Program {
+public:
+	Program(initializer_list<Shader> shaders)
+		: mProgram{ glCreateProgram() }
+	{
+		for_each(begin(shaders), end(shaders), [this](auto&& shader)
+		{
+			glAttachShader(mProgram, shader);
+		});
+
+		GLint success;
+
+		glLinkProgram(mProgram);
+		glGetProgramiv(mProgram, GL_LINK_STATUS, &success);
+		if (!success)
+		{
+			GLsizei infoLogLen;
+			glGetProgramiv(mProgram, GL_INFO_LOG_LENGTH, &infoLogLen);
+
+			string errorMessage(infoLogLen, '\0');
+			glGetProgramInfoLog(mProgram, infoLogLen, nullptr, &errorMessage[0]);
+
+			throw invalid_argument{ errorMessage };
+		}
+
+		glValidateProgram(mProgram);
+		glGetProgramiv(mProgram, GL_VALIDATE_STATUS, &success);
+		if (!success)
+		{
+			GLsizei infoLogLen;
+			glGetProgramiv(mProgram, GL_INFO_LOG_LENGTH, &infoLogLen);
+
+			string errorMessage(infoLogLen, '\0');
+			glGetProgramInfoLog(mProgram, infoLogLen, nullptr, &errorMessage[0]);
+
+			throw invalid_argument{ errorMessage };
+		}
+	}
+
+	explicit Program(Program&& rhs)
+		: mProgram(rhs.mProgram)
+	{
+		rhs.mProgram = 0;
+	}
+
+	Program(const Program&) = delete;
+	Program& operator = (const Program&) = delete;
+
+	Program& operator = (Program&& rhs)
+	{
+		mProgram = rhs.mProgram;
+		return *this;
+	}
+
+	~Program()
+	{
+		if (mProgram)
+			glDeleteProgram(mProgram);
+	}
+
+	void use() noexcept
+	{
+		glUseProgram(mProgram);
+	}
+
+	void unuse() noexcept
+	{
+		glUseProgram(0);
+	}
+
+private:
+	GLuint mProgram;
+};
+
+} // glsl
 
 int main()
 {
@@ -70,21 +212,6 @@ void main()
 	gl_Position = vec4(aPos.x, aPos.y, aPos.z, 1.0);
 }
 )";
-	const auto vs = glCreateShader(GL_VERTEX_SHADER);
-
-	glShaderSource(vs, 1, &vsSrc, nullptr);
-	glCompileShader(vs);
-	GLint success;
-	glGetShaderiv(vs, GL_COMPILE_STATUS, &success);
-	if (!success)
-	{
-		GLint logLen;
-		glGetShaderiv(vs, GL_INFO_LOG_LENGTH, &logLen);
-
-		string erroLog(logLen, '\0');
-		glGetShaderInfoLog(vs, logLen, nullptr, &erroLog[0]);
-		cerr << "Unable to build vertex shader for this reason:\n" << erroLog << endl;
-	}
 
 	const auto fsSrc = R"(
 #version 440 core
@@ -95,40 +222,7 @@ void main()
     FragColor = vec4(1.0f, 0.5f, 0.2f, 1.0f);
 })";
 
-	const auto fs = glCreateShader(GL_FRAGMENT_SHADER);
-
-	glShaderSource(fs, 1, &fsSrc, nullptr);
-	glCompileShader(fs);
-	glGetShaderiv(fs, GL_COMPILE_STATUS, &success);
-	if (!success)
-	{
-		GLint logLen;
-		glGetShaderiv(fs, GL_INFO_LOG_LENGTH, &logLen);
-
-		string erroLog(logLen, '\0');
-		glGetShaderInfoLog(fs, logLen, nullptr, &erroLog[0]);
-		cerr << "Unable to build fragment shader for this reason:\n" << erroLog << endl;
-	}
-
-	const auto prog = glCreateProgram();
-	glAttachShader(prog, vs);
-	glAttachShader(prog, fs);
-	glLinkProgram(prog);
-
-	glGetProgramiv(prog, GL_LINK_STATUS, &success);
-	if (!success)
-	{
-		GLint logLen;
-		glGetProgramiv(prog, GL_INFO_LOG_LENGTH, &logLen);
-
-		string erroLog(logLen, '\0');
-		glGetProgramInfoLog(prog, logLen, nullptr, &erroLog[0]);
-		cerr << "Unable to link gpu program for this reason:\n" << erroLog << endl;
-	}
-
-	glUseProgram(prog);
-	glDeleteShader(vs);
-	glDeleteShader(fs);
+	glsl::Program prog{ {glsl::vertex, vsSrc}, {glsl::fragment, fsSrc} };
 	
 	GLuint vao;
 	glGenVertexArrays(1, &vao);
@@ -136,6 +230,8 @@ void main()
 	glBindBuffer(GL_ARRAY_BUFFER, vao);
 	glVertexAttribPointer(0, 3, GL_FLOAT, false, 3 * sizeof(GLfloat), nullptr);
 	glEnableVertexAttribArray(0);
+
+	prog.use();
 
 	while (!glfwWindowShouldClose(window))
 	{
