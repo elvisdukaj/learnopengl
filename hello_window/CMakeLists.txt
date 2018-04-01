@@ -3,7 +3,11 @@ set(proj_name "hello-window")
 find_package(glfw3 REQUIRED)
 find_package(glm REQUIRED)
 
-add_executable(${proj_name} main.cpp glad.c)
+if (WIN32)
+	add_executable(${proj_name} WIN32 main.cpp glad.c)
+else()
+	add_executable(${proj_name} main.cpp glad.c)
+endif(WIN32)
 
 target_compile_features(${proj_name} PRIVATE cxx_std_17)
 

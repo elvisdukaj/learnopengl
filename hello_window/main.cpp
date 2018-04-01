@@ -15,7 +15,11 @@ void frameBufferSizeCallback(GLFWwindow* window, int width, int height)
 	glViewport(0, 0, width, height);
 }
 
+#if defined(WIN32)
+int WinMain(HINSTANCE /*hInst*/, HINSTANCE /*hPrevInst*/, LPSTR /*lpCmdLine*/, int /*nCmdShow*/)
+#else
 int main()
+#endif
 {
 	glfwInit();
 
