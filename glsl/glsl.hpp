@@ -8,12 +8,11 @@
 #include <stdexcept>
 
 namespace glsl {
-
+	
 	enum ShaderType : GLenum {
-		vertex = GL_VERTEX_SHADER,
-		fragment = GL_FRAGMENT_SHADER
+		vertex_shader = GL_VERTEX_SHADER,
+		fragment_shader = GL_FRAGMENT_SHADER
 	};
-
 
 	class Shader {
 	public:

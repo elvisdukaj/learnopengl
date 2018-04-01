@@ -59,7 +59,9 @@ int main()
 	};
 
 	GLuint vbo;
-	glGenBuffers(1, &vbo);;
+	glGenBuffers(1, &vbo);
+	glBindVertexArray(vao);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices.data(), GL_STATIC_DRAW);
 
 	const auto vsSrc = R"(
 #version 440 core
@@ -80,13 +82,12 @@ void main()
     FragColor = vec4(1.0f, 0.5f, 0.2f, 1.0f);
 })";
 
-	glsl::Program prog{ {glsl::vertex, vsSrc}, {glsl::fragment, fsSrc} };
+	glsl::Program prog{ {glsl::vertex_shader, vsSrc}, {glsl::fragment_shader, fsSrc} };
 	
 	GLuint vao;
 	glGenVertexArrays(1, &vao);
 	glBindVertexArray(vao);
 	glBindBuffer(GL_ARRAY_BUFFER, vbo);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices.data(), GL_STATIC_DRAW);
 	glVertexAttribPointer(0, 3, GL_FLOAT, false, 3 * sizeof(GLfloat), nullptr);
 	glEnableVertexAttribArray(0);
 
