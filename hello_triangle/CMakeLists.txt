@@ -11,6 +11,7 @@ target_link_libraries(${proj_name}
 PRIVATE
 	glfw
 	glm
+	glsl
 )
 
 install(TARGETS ${proj_name} DESTINATION .)
