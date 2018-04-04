@@ -5,6 +5,7 @@
 #include <string_view>
 #include <initializer_list>
 #include <string>
+#include <map>
 #include <fstream>
 #include <sstream>
 #include <stdexcept>
@@ -152,8 +153,30 @@ namespace glsl {
 			glUseProgram(0);
 		}
 
+		void uniform(std::string str, GLuint val)
+		{
+			auto it = m_uniformMap.find(str);
+
+			if (it == std::end(m_uniformMap))
+				m_uniformMap.emplace(str, uniformLocation(str));
+
+			glUniform1i(m_uniformMap[str], val);
+		}
+
+	private:
+		GLint uniformLocation(const std::string& str)
+		{
+			auto res = glGetUniformLocation(mProgram, str.c_str());
+
+			if (res < 0)
+				std::runtime_error{ "uniform not found" };
+
+			return res;
+		}
+
 	private:
 		GLuint mProgram;
+		std::map<std::string, GLint> m_uniformMap;
 	};
 
 } // glsl
