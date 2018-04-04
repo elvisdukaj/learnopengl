@@ -87,16 +87,13 @@ int main()
 	};
 
 	array<glm::vec2, 4> texCoords = {
-		glm::vec2{1.0f, 1.0f}, // top right
-		glm::vec2{1.0f, 0.0f}, // bottom right
-		glm::vec2{0.0f, 0.0f}, // bottom left
-		glm::vec2{0.0f, 1.0f}, // top left
+		glm::vec2{1.0f, 1.0f},         // top right
+		glm::vec2{1.0f, 0.0f},         // bottom right
+		glm::vec2{0.0f, 0.0f},         // bottom left
+		glm::vec2{0.0f, 1.0f},         // top left
 	};
 
-	array<GLuint, 6> indexes{
-		0, 1, 2,
-		2, 3, 0
-	};
+	array<GLuint, 6> indexes{ 0, 1, 2, 2, 3, 0 };
 
 	GLuint idx_ebo;
 	glGenBuffers(1, &idx_ebo);
