@@ -5,6 +5,8 @@
 #include <string_view>
 #include <initializer_list>
 #include <string>
+#include <fstream>
+#include <sstream>
 #include <stdexcept>
 
 namespace glsl {
@@ -16,11 +18,16 @@ namespace glsl {
 
 	class Shader {
 	public:
-		Shader(ShaderType type, const std::string_view& src)
+		Shader(ShaderType type, const std::string& filename)
 			: mShader{ glCreateShader(type) }
 		{
-			auto srcData = src.data();
-			glShaderSource(mShader, 1, &srcData, nullptr);
+			std::ifstream file(filename);
+			std::stringstream buffer;
+			buffer << file.rdbuf();
+
+			auto srcData = buffer.str();
+			auto ptr = srcData.c_str();
+			glShaderSource(mShader, 1, &ptr, nullptr);
 
 			glCompileShader(mShader);
 

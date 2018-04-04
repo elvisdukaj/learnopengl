@@ -70,32 +70,7 @@ int main()
 
 	glfwSwapInterval(1);
 	glClearColor(0.2f, 0.3f, 3.0f, 0.0f);
-
-	const auto vsSrc = R"(
-#version 440 core
-layout(location = 0) in vec3 aPos;
-layout(location = 1) in vec3 aCol;
-
-out vec4 fragColor;
-
-void main()
-{
-	fragColor = vec4(aCol.r, aCol.g, aCol.b, 1.0f);
-	gl_Position = vec4(aPos.x, aPos.y, aPos.z, 1.0);
-}
-)";
-
-	const auto fsSrc = R"(
-#version 440 core
-in vec4 fragColor;
-out vec4 FragColor;
-
-void main()
-{
-    FragColor = fragColor;
-})";
-
-	glsl::Program prog{ { glsl::vertex_shader, vsSrc },{ glsl::fragment_shader, fsSrc } };
+;
 
 	array<glm::vec3, 3> vertices = {
 		glm::vec3{ 0.5f,  0.5f, 0.0f},  // top right
@@ -104,9 +79,9 @@ void main()
 	};
 
 	array<glm::vec3, 3> colors = {
-		glm::vec3{ 1.0f, 0.0f, 0.0f },  // top right
-		glm::vec3{ 0.0f, 1.0f, 0.0f },  // bottom right
-		glm::vec3{ 0.0f, 0.0f, 1.0f },  // bottom left
+		glm::vec3{ 1.0f, 0.0f, 0.0f },  // red
+		glm::vec3{ 0.0f, 1.0f, 0.0f },  // green
+		glm::vec3{ 0.0f, 0.0f, 1.0f },  // blue
 	};
 
 	GLuint pos_vbo;
@@ -131,7 +106,8 @@ void main()
 	
 	glEnableVertexAttribArray(0);
 	glEnableVertexAttribArray(1);
-
+	
+	glsl::Program prog{ { glsl::vertex_shader, "hello_triangle2.vs"s },{ glsl::fragment_shader, "hello_triangle2.fs"s } };
 	prog.use();
 
 	while (!glfwWindowShouldClose(window))
@@ -139,7 +115,7 @@ void main()
 		glfwPollEvents();
 
 		glClear(GL_COLOR_BUFFER_BIT);
-		glDrawArrays(GL_TRIANGLES, 0, vertices.size());
+		glDrawArrays(GL_TRIANGLES, 0, (GLsizei)vertices.size());
 
 		glfwSwapBuffers(window);		
 	}

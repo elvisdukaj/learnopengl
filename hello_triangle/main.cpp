@@ -64,27 +64,6 @@ int main()
 	glBindBuffer(GL_ARRAY_BUFFER, vbo);
 	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices.data(), GL_STATIC_DRAW);
 
-	const auto vsSrc = R"(
-#version 440 core
-layout(location = 0) in vec3 aPos;
-
-void main()
-{
-	gl_Position = vec4(aPos.x, aPos.y, aPos.z, 1.0);
-}
-)";
-
-	const auto fsSrc = R"(
-#version 440 core
-out vec4 FragColor;
-
-void main()
-{
-    FragColor = vec4(1.0f, 0.5f, 0.2f, 1.0f);
-})";
-
-	glsl::Program prog{ {glsl::vertex_shader, vsSrc}, {glsl::fragment_shader, fsSrc} };
-	
 	GLuint vao;
 	glGenVertexArrays(1, &vao);
 	glBindVertexArray(vao);
@@ -92,6 +71,7 @@ void main()
 	glVertexAttribPointer(0, 3, GL_FLOAT, false, 3 * sizeof(GLfloat), nullptr);
 	glEnableVertexAttribArray(0);
 
+	glsl::Program prog{ { glsl::vertex_shader, "hello_triangle.vs"s },{ glsl::fragment_shader, "hello_triangle.fs"s } };
 	prog.use();
 
 	while (!glfwWindowShouldClose(window))

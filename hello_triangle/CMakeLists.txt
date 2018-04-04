@@ -19,3 +19,4 @@ PRIVATE
 )
 
 install(TARGETS ${proj_name} DESTINATION .)
+install(FILES "hello_triangle.vs" "hello_triangle.fs" DESTINATION .)
