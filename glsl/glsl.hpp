@@ -37,13 +37,14 @@ namespace glsl {
 
 			if (!success)
 			{
+				using namespace std::string_literals;
 				GLsizei infoLogLen;
 				glGetShaderiv(mShader, GL_INFO_LOG_LENGTH, &infoLogLen);
 
 				std::string errorMessage(infoLogLen, '\0');
 				glGetShaderInfoLog(mShader, infoLogLen, nullptr, &errorMessage[0]);
 
-				throw std::invalid_argument{ errorMessage };
+				throw std::invalid_argument{filename + " failed to compile!\n"s + errorMessage };
 			}
 		}
 
