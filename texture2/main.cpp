@@ -46,7 +46,7 @@ int main()
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 4);
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
-	auto window = glfwCreateWindow(800, 600, "Hello Texture", nullptr, nullptr);
+	auto window = glfwCreateWindow(800, 600, "Hello Texture - 2", nullptr, nullptr);
 
 	if (!window)
 	{
@@ -156,12 +156,12 @@ int main()
 	stbi_image_free(imageData);
 	
 	glsl::Program prog{
-		{ glsl::vertex_shader, "texture.vs"s },
-		{ glsl::fragment_shader, "texture.fs"s }
+		{ glsl::vertex_shader, "texture2.vs"s },
+		{ glsl::fragment_shader, "texture2.fs"s }
 	};
 	
 	prog.use();
-	//prog.uniform("texSample"s, 0);
+	prog.uniform("texSample"s, 0);
 
 	while (!glfwWindowShouldClose(window))
 	{
