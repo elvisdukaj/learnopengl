@@ -17,7 +17,7 @@ function(set_compiler_options the_target)
 	endif()
 endfunction()
 
-add_subdirectory(glsl)
+add_subdirectory(common_libs)
 add_subdirectory(2.3.1_hello_window)
 add_subdirectory(2.4.1_hello_triangle)
 add_subdirectory(2.4.2_hello_triangle)

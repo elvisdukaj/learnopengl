@@ -1,4 +1,4 @@
-#include "stb_image.h"
+#include <stb_image.h>
 #include <glsl.hpp>
 #include <glm/glm.hpp>
 #include <GLFW/glfw3.h>
@@ -46,7 +46,7 @@ int main()
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 4);
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
-	auto window = glfwCreateWindow(800, 600, "Hello Texture - 2", nullptr, nullptr);
+	auto window = glfwCreateWindow(800, 600, "2.6.2 Texture", nullptr, nullptr);
 
 	if (!window)
 	{
@@ -135,7 +135,7 @@ int main()
 	glEnableVertexAttribArray(2);
 
 	int width, height, channels;
-	auto imageData = stbi_load("wall.jpeg", &width, &height, &channels, 0);
+	auto imageData = stbi_load("resources/textures/wall.jpeg", &width, &height, &channels, 0);
 
 	GLuint texture;
 	glGenTextures(1, &texture);
@@ -156,8 +156,8 @@ int main()
 	stbi_image_free(imageData);
 	
 	glsl::Program prog{
-		{ glsl::vertex_shader, "texture2.vs"s },
-		{ glsl::fragment_shader, "texture2.fs"s }
+		{ glsl::vertex_shader  , "resources/shaders/2.6.2_texture.vs"s },
+		{ glsl::fragment_shader, "resources/shaders/2.6.2_texture.fs"s }
 	};
 	
 	prog.use();

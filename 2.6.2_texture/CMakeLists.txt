@@ -1,23 +1,34 @@
-set(proj_name "texture2")
+set(proj_name "2.6.2_texture")
 
 find_package(glfw3 REQUIRED)
-find_package(glm REQUIRED)
+
+set(SOURCES "main.cpp")
 
 if (WIN32)
-	add_executable(${proj_name} WIN32 main.cpp glad.c)
+	add_executable(${proj_name} WIN32 ${SOURCES})
 else()
-	add_executable(${proj_name} main.cpp glad.c)
+	add_executable(${proj_name} ${SOURCES})
 endif(WIN32)
 
-target_compile_options(${proj_name} PRIVATE -DSTB_IMAGE_IMPLEMENTATION)
-target_compile_features(${proj_name} PRIVATE cxx_std_17)
 
 target_link_libraries(${proj_name}
 PRIVATE
 	glfw
-	glm
-	glsl
+	common_libs
 )
 
 install(TARGETS ${proj_name} DESTINATION .)
-install(FILES "texture2.vs" "texture2.fs" "wall.jpeg" DESTINATION .)
+install(
+FILES
+	"../resources/shaders/2.6.2_texture.vs"
+	"../resources/shaders/2.6.2_texture.fs"
+DESTINATION
+	"resources/shaders"
+)
+
+install(
+FILES
+	"../resources/textures/wall.jpeg"
+DESTINATION
+	"resources/textures"
+)

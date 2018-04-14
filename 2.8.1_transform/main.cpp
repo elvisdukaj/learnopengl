@@ -53,7 +53,7 @@ int main()
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 4);
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
-	auto window = glfwCreateWindow(g_width, g_height, "Hello Transform - 1", nullptr, nullptr);
+	auto window = glfwCreateWindow(g_width, g_height, "2.8.1 Transform", nullptr, nullptr);
 
 	if (!window)
 	{
@@ -145,7 +145,7 @@ int main()
 	glGenTextures((GLsizei)textures.size(), textures.data());
 	
 	int width, height, channels;
-	auto rawWallImageData = stbi_load("wall.jpeg", &width, &height, &channels, 0);
+	auto rawWallImageData = stbi_load("resources/textures/wall.jpeg", &width, &height, &channels, 0);
 
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, textures[0]);
@@ -164,7 +164,7 @@ int main()
 	stbi_image_free(rawWallImageData);
 
 	stbi_set_flip_vertically_on_load(true);
-	auto rawSmileImageData = stbi_load("awesomeface.png", &width, &height, &channels, 0);
+	auto rawSmileImageData = stbi_load("resources/textures/awesomeface.png", &width, &height, &channels, 0);
 
 	glActiveTexture(GL_TEXTURE1);
 	glBindTexture(GL_TEXTURE_2D, textures[1]);
@@ -183,8 +183,8 @@ int main()
 	stbi_image_free(rawSmileImageData);
 	
 	glsl::Program prog{
-		{ glsl::vertex_shader, "8.1_transform.vs"s },
-		{ glsl::fragment_shader, "8.1_transform.fs"s }
+		{ glsl::vertex_shader  , "resources/shaders/2.8.1_transform.vs"s },
+		{ glsl::fragment_shader, "resources/shaders/2.8.1_transform.fs"s }
 	};
 	
 	prog.use();

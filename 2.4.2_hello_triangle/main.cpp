@@ -45,7 +45,7 @@ int main()
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 4);
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
-	auto window = glfwCreateWindow(800, 600, "Hello Window", nullptr, nullptr);
+	auto window = glfwCreateWindow(800, 600, "2.4.2 Hello Triangle", nullptr, nullptr);
 
 	if (!window)
 	{
@@ -107,7 +107,10 @@ int main()
 	glEnableVertexAttribArray(0);
 	glEnableVertexAttribArray(1);
 	
-	glsl::Program prog{ { glsl::vertex_shader, "hello_triangle2.vs"s },{ glsl::fragment_shader, "hello_triangle2.fs"s } };
+	glsl::Program prog{
+		{ glsl::vertex_shader  , "resources/shaders/2.4.2_hello_triangle.vs"s },
+		{ glsl::fragment_shader, "resources/shaders/2.4.2_hello_triangle.fs"s }
+	};
 	prog.use();
 
 	while (!glfwWindowShouldClose(window))

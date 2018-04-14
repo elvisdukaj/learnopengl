@@ -17,7 +17,7 @@ void frameBufferSizeCallback(GLFWwindow* window, int width, int height)
 }
 
 #if defined(WIN32)
-int WinMain(HINSTANCE /*hInst*/, HINSTANCE /*hPrevInst*/, LPSTR /*lpCmdLine*/, int /*nCmdShow*/)
+int WinMain(HINSTANCE /*hInst*/, HINSTANCE /*hPrevInst*/, LPSTR lpCmdLine, int nCmdShow)
 #else
 int main()
 #endif
@@ -28,7 +28,7 @@ int main()
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 4);
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
-	auto window = glfwCreateWindow(800, 600, "Hello Window", nullptr, nullptr);
+	auto window = glfwCreateWindow(800, 600, "2.4.1 Hello Triangle", nullptr, nullptr);
 
 	if (!window)
 	{
@@ -71,7 +71,11 @@ int main()
 	glVertexAttribPointer(0, 3, GL_FLOAT, false, 3 * sizeof(GLfloat), nullptr);
 	glEnableVertexAttribArray(0);
 
-	glsl::Program prog{ { glsl::vertex_shader, "hello_triangle.vs"s },{ glsl::fragment_shader, "hello_triangle.fs"s } };
+	glsl::Program prog{
+		{ glsl::vertex_shader  , "resources/shaders/2.4.1_hello_triangle.vs"s },
+		{ glsl::fragment_shader, "resources/shaders/2.4.1_hello_triangle.fs"s }
+	};
+
 	prog.use();
 
 	while (!glfwWindowShouldClose(window))
