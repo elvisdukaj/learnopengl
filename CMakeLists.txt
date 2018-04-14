@@ -1,6 +1,5 @@
 cmake_minimum_required(VERSION 3.10)
 
-
 option(USE_AVX "Enable AVX instruction sete" On)
 option(USE_AVX2 "Enable AVX2 instruction sete" Off)
 
@@ -19,10 +18,10 @@ function(set_compiler_options the_target)
 endfunction()
 
 add_subdirectory(glsl)
-add_subdirectory(hello_window)
-add_subdirectory(hello_triangle)
-add_subdirectory(hello_triangle_2)
-add_subdirectory(texture)
-add_subdirectory(texture2)
-add_subdirectory(texture3)
-add_subdirectory(8.1_transform)
+add_subdirectory(2.3.1_hello_window)
+add_subdirectory(2.4.1_hello_triangle)
+add_subdirectory(2.4.2_hello_triangle)
+add_subdirectory(2.6.1_texture)
+add_subdirectory(2.6.2_texture)
+add_subdirectory(2.6.3_texture)
+add_subdirectory(2.8.1_transform)
