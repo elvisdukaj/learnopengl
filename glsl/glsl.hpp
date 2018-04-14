@@ -1,6 +1,8 @@
 #pragma once
 
 #include <glad/glad.h>
+#include <glm/glm.hpp>
+#include <glm/gtc/type_ptr.hpp>
 #include <algorithm>
 #include <string_view>
 #include <initializer_list>
@@ -22,7 +24,13 @@ namespace glsl {
 		Shader(ShaderType type, const std::string& filename)
 			: mShader{ glCreateShader(type) }
 		{
+			using namespace std::string_literals;
+
 			std::ifstream file(filename);
+
+			if (!file)
+				throw std::invalid_argument{ "Unable to open: " + filename + " file!"s };
+
 			std::stringstream buffer;
 			buffer << file.rdbuf();
 
@@ -162,6 +170,16 @@ namespace glsl {
 				m_uniformMap.emplace(str, uniformLocation(str));
 
 			glUniform1i(m_uniformMap[str], val);
+		}
+
+		void uniform(std::string str, const glm::mat4& mat)
+		{
+			auto it = m_uniformMap.find(str);
+
+			if (it == std::end(m_uniformMap))
+				m_uniformMap.emplace(str, uniformLocation(str));
+
+			glUniformMatrix4fv(m_uniformMap[str], 1, GL_FALSE, glm::value_ptr(mat));
 		}
 
 	private:
